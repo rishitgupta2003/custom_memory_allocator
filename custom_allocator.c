@@ -53,8 +53,8 @@ Chunk_List alloced_chunks = {0};
 Chunk_List freed_chunks = {0};
 
 int chunk_compar(const void* a, const void* b){
-    Chunk* a_chunk = a;
-    Chunk* b_chunk = b;
+    const Chunk* a_chunk = a;
+    const Chunk* b_chunk = b;
 
     return a_chunk->start - b_chunk->start;
 }
@@ -108,7 +108,7 @@ void chunk_list_remove(Chunk_List* list, size_t index){
     // UNIMPLEMENTED;
     assert(index < list->count);
     
-    for(size_t i = index; i < list->count -1; --i){
+    for(size_t i = index; i < list->count - 1; ++i){
         list->chunks[i] = list->chunks[i+1];
     }
 
