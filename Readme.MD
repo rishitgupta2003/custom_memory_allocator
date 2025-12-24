@@ -8,7 +8,7 @@ A small **educational memory allocator** written in C that manages a fixed-size 
 
 ## Features
 
-- Fixed-size heap (`HEAP_CAP`)
+- Fixed-size heap (`MEM_CAPACITY`)
 - First-fit allocation strategy
 - Explicit chunk metadata tracking
 - Free-list coalescing (merging adjacent free blocks)
@@ -21,7 +21,7 @@ A small **educational memory allocator** written in C that manages a fixed-size 
 
 The allocator maintains two main chunk lists:
 
-- `alloced_chunks` — tracks currently allocated memory blocks  
+- `allocated_chunks` — tracks currently allocated memory blocks  
 - `freed_chunks` — tracks available (free) memory blocks  
 
 Each memory block is represented by the following structure:
@@ -37,7 +37,7 @@ typedef struct {
 
 ## Public API
 
-### `void *heap_alloc(size_t size)`
+### `void *heap_alloced(size_t size)`
 - Allocates a block of memory of the requested size.
 - Uses a **first-fit strategy**.
 - Splits free chunks if they are larger than requested.
@@ -46,10 +46,10 @@ typedef struct {
 
 ### `void heap_free(void *ptr)`
 - Frees a previously allocated memory block.
-- The pointer must be returned by `heap_alloc`.
+- The pointer must be returned by `heap_alloced`.
 - Double-free or invalid pointers trigger an `assert()`.
 
-### `void chunk_list_dump(const Chunk_List *list)`
+### `void chunk_info(const Chunk_List *list)`
 - Prints chunk metadata for debugging purposes.
 
 ---
@@ -59,7 +59,7 @@ typedef struct {
 2. Linearly scan the free list (**first-fit**).
 3. Remove the selected free chunk.
 4. Split and insert remainder (if any).
-5. Track allocation in `alloced_chunks`.
+5. Track allocation in `allocated_chunks`.
 
 ---
 
@@ -69,13 +69,12 @@ typedef struct {
 ❌ No bounds checking (buffer overruns corrupt metadata)  
 ❌ Fixed metadata capacity (`CHUNK_LIST_CAP`)  
 ❌ Linear-time allocation and free operations (O(N))  
-❌ First-fit strategy leads to fragmentation  
-❌ `heap_collect()` is unimplemented  
+❌ First-fit strategy leads to fragmentation
 ❌ Uses `assert()` instead of graceful error handling  
 
 ---
 
 ## Notes
 - Metadata can be exhausted before heap memory due to fragmentation.
-- Only exact pointers returned by `heap_alloc()` may be freed.
+- Only exact pointers returned by `heap_alloced()` may be freed.
 - Best suited as an educational reference, **not a drop-in allocator**.
